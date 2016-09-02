@@ -1,6 +1,6 @@
 {
     "name": "karmia-rpc",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "RPC module of Karmia JavaScript library",
     "homepage": "https://github.com/fujimakishouten/karmia-rpc",
     "license": "MIT",
