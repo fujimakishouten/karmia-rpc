@@ -1,0 +1,27 @@
+{
+    "name": "karmia-rpc",
+    "version": "0.1.0",
+    "description": "RPC module of Karmia JavaScript library",
+    "homepage": "https://github.com/fujimakishouten/karmia-rpc",
+    "license": "MIT",
+    "author": "Kazuma Fujimaki <fujimaki-k@fujimakishouten.com>",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fujimakishouten/karmia-rpc.git"
+    },
+    "scripts": {
+        "test": "./node_modules/.bin/mocha ./test"
+    },
+    "dependencies": {
+        "karmia-context": ">=0.5.3"
+    },
+    "devDependencies": {
+        "mocha": ">=2.4.5",
+        "expect.js": ">=0.3.1",
+        "eslint": ">=3.4.0"
+    },
+    "engines": {
+        "node": ">=6.0.0"
+    }
+}
