@@ -220,6 +220,16 @@ describe('karmia-rpc', function () {
         });
 
         describe('Should be error', function () {
+            it('Method not specified', function (done) {
+                const body = {};
+                methods.call(context, body).catch(function (error) {
+                    expect(error.code).to.be(404);
+                    expect(error.message).to.be('Not Found');
+
+                    done();
+                });
+            });
+
             it('Method not found', function (done) {
                 const body = {method: 'TEST_METHOD_NOT_FOUND'};
                 methods.call(context, body).catch(function (error) {
