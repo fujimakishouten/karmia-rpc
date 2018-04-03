@@ -9,3 +9,5 @@ declare class KarmiaRPC {
     get(path?: string): Function|object;
     call(context: KarmiaContext, body:Array<object>|object): Promise<any>;
 }
+
+export = KarmiaRPC;
