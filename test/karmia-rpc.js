@@ -14,8 +14,8 @@ const expect = require('expect.js'),
 
 // Before each
 beforeEach(function () {
-    context = karmia_context();
-    methods = karmia_rpc();
+    context = new karmia_context();
+    methods = new karmia_rpc();
 });
 
 

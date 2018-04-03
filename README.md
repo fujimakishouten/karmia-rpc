@@ -12,7 +12,7 @@ npm install karmia-rpc
 
 ```JavaScript
 const karmia_rpc = require('karmia-rpc'),
-    methods = karmia_rpc();
+    methods = new karmia_rpc();
 ```
 
 ### Define method
