@@ -5,17 +5,25 @@
 
 
 
+// Import modules
+import KarmiaContext = require("karmia-context");
+import KarmiaRPC = require("../");
+
+
 // Variables
-let context,
-    methods;
-const expect = require('expect.js'),
-    karmia_context = require('karmia-context'),
-    karmia_rpc = require('../');
+const expect = require("expect.js");
+let context: KarmiaContext;
+let methods: KarmiaRPC;
+
+// Declarations
+declare class KarmiaRPCError extends Error {
+    code?: number;
+}
 
 // Before each
 beforeEach(function () {
-    context = new karmia_context();
-    methods = new karmia_rpc();
+    context = new KarmiaContext();
+    methods = new KarmiaRPC();
 });
 
 
@@ -56,7 +64,7 @@ describe('karmia-rpc', function () {
                     TEST_METHOD: function () {}
                 },
                 name = 'TEST_METHOD_APPEND',
-                append = {};
+                append = {} as {[index: string]: any};
             append[name] = function () {};
 
             methods.set(method);
@@ -133,7 +141,7 @@ describe('karmia-rpc', function () {
         describe('Should call method', function () {
             it('Single request', function (done) {
                 const name = 'TEST_METHOD',
-                    method = {},
+                    method = {} as {[index: string]: any},
                     body = {
                         method: name,
                         params: {
@@ -141,12 +149,12 @@ describe('karmia-rpc', function () {
                             value2: 2
                         }
                     };
-                method[name] = function (value1, value2) {
+                method[name] = function (value1: number, value2: number): number {
                     return value1 + value2;
                 };
 
                 methods.set(method);
-                methods.call(context, body).then(function (result) {
+                methods.call(context, body).then(function (result: number) {
                     expect(result).to.be(body.params.value1 + body.params.value2);
 
                     done();
@@ -156,7 +164,7 @@ describe('karmia-rpc', function () {
             describe('Batch request', function () {
                 it('All request success', function (done) {
                     const name = 'TEST_METHOD',
-                        method = {},
+                        method = {} as {[index: string]: any},
                         body = [
                             {
                                 method: name,
@@ -172,12 +180,12 @@ describe('karmia-rpc', function () {
                                 }
                             }
                         ];
-                    method[name] = function (value1, value2) {
+                    method[name] = function (value1: number, value2: number) {
                         return value1 + value2;
                     };
 
                     methods.set(method);
-                    methods.call(context, body).then(function (result) {
+                    methods.call(context, body).then(function (result: Array<number>) {
                         body.forEach(function (data, index) {
                             expect(result[index]).to.be(data.params.value1 + data.params.value2);
                         });
@@ -188,7 +196,7 @@ describe('karmia-rpc', function () {
 
                 it('Some request fail', function (done) {
                     const name = 'TEST_METHOD',
-                        method = {},
+                        method = {} as {[index: string]: any},
                         body = [
                             {
                                 method: name,
@@ -200,15 +208,15 @@ describe('karmia-rpc', function () {
                                 method: 'TEST_METHOD_NOT_FOUND'
                             }
                         ];
-                    method[name] = function (value1, value2) {
+                    method[name] = function (value1: number, value2: number) {
                         return value1 + value2;
                     };
 
                     methods.set(method);
-                    methods.call(context, body).then(function (result) {
+                    methods.call(context, body).then(function (result: Array<Error|number>) {
                         const error = result.find(function (value) {
                             return (value instanceof Error);
-                        });
+                        }) as KarmiaRPCError;
 
                         expect(error.code).to.be(404);
                         expect(error.message).to.be('Not Found');
@@ -222,7 +230,7 @@ describe('karmia-rpc', function () {
         describe('Should be error', function () {
             it('Method not specified', function (done) {
                 const body = {};
-                methods.call(context, body).catch(function (error) {
+                methods.call(context, body).catch(function (error: KarmiaRPCError) {
                     expect(error.code).to.be(404);
                     expect(error.message).to.be('Not Found');
 
@@ -232,7 +240,7 @@ describe('karmia-rpc', function () {
 
             it('Method not found', function (done) {
                 const body = {method: 'TEST_METHOD_NOT_FOUND'};
-                methods.call(context, body).catch(function (error) {
+                methods.call(context, body).catch(function (error: KarmiaRPCError) {
                     expect(error.code).to.be(404);
                     expect(error.message).to.be('Not Found');
 
@@ -242,19 +250,19 @@ describe('karmia-rpc', function () {
 
             it('Method return error', function (done) {
                 const name = 'TEST_METHOD_ERROR',
-                    method = {},
+                    method = {} as {[index: string]: any},
                     body = {method: name},
                     code = 500,
                     message = 'TEST_ERROR_MESSAGE';
                 method[name] = function () {
-                    const error = new Error(message);
+                    const error = new Error(message) as KarmiaRPCError;
                     error.code = code;
 
                     return Promise.reject(error);
                 };
 
                 methods.set(method);
-                methods.call(context, body).catch(function (error) {
+                methods.call(context, body).catch(function (error: KarmiaRPCError) {
                     expect(error.code).to.be(code);
                     expect(error.message).to.be(message);
 
@@ -273,3 +281,4 @@ describe('karmia-rpc', function () {
  * c-hanging-comment-ender-p: nil
  * End:
  */
+
